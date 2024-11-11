@@ -1,0 +1,24 @@
+name: Jupyynterest
+volumes:
+  db-data:
+networks:
+  backend:
+
+services:
+  jupyynterest-db:
+    image: mongo:6-jammy
+    container_name: jupyynterest-db
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - db-data:/var/lib/mongo/data
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"localhost:27017\"}]}).ok || rs.status().ok" | mongo --port 27017 --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
+    networks:
+      - backend

@@ -13,6 +13,14 @@ defmodule Server.Application do
         scheme: :http,
         plug: RestApi.Router,
         options: [port: Application.get_env(:server, :port)]
+      },
+      {
+        Mongo,
+        [
+            name: :mongo,
+            database: Application.get_env(:server, :database),
+            pool_size: Application.get_env(:server, :pool_size)
+        ]
       }
       # Starts a worker by calling: Server.Worker.start_link(arg)
       # {Server.Worker, arg}
