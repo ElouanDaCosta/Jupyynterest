@@ -8,7 +8,12 @@ defmodule Server.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {Plug.Cowboy, scheme: :http, plug: RestApi.Router, options: [port: 8080]}
+      {
+        Plug.Cowboy,
+        scheme: :http,
+        plug: RestApi.Router,
+        options: [port: Application.get_env(:server, :port)]
+      }
       # Starts a worker by calling: Server.Worker.start_link(arg)
       # {Server.Worker, arg}
     ]
