@@ -6,19 +6,22 @@ networks:
 
 services:
   jupyynterest-db:
-    image: mongo:6-jammy
+    image: 'postgres:15'
     container_name: jupyynterest-db
     restart: always
     ports:
-      - '27017:27017'
+      - 5456:5432
     volumes:
-      - db-data:/var/lib/mongo/data
+      - db-data:/var/lib/postgres/data
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: jupyynterest
     healthcheck:
-      test: test $$(echo "rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"localhost:27017\"}]}).ok || rs.status().ok" | mongo --port 27017 --quiet) -eq 1
-      interval: 10s
-      start_period: 30s
+      test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
     networks:
       - backend

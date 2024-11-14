@@ -25,13 +25,6 @@ defmodule RestApi.Router do
     send_resp(conn, 200, "OK")
   end
 
-  get "/db-health_check" do
-    case Mongo.command(:mongo, ping: 1) do
-      {:ok, _res} -> send_resp(conn, 200, "check")
-      {:error, _err} -> send_resp(conn, 500, "Something went wrong")
-    end
-  end
-
   # Fallback handler when there was no match
   match _ do
     send_resp(conn, 404, "Not Found")
